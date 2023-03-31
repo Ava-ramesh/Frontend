@@ -1,47 +1,57 @@
-name: ci
-
+name: Deploy Docker CI
 on:
+  workflow_dispatch:
   push:
     branches:
-      - "main"
-
+      - main
+  pull_request:
+    branches:
+      - main
 jobs:
-  build:
+  Test_Build:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
+    - name: Setup .NET Core SDK
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 3.1.201
+    - uses: actions/checkout@v1
+    - name: Build with dotnet
+      working-directory: ./github_docker_deploy
+      run: dotnet build --configuration Release
+    - name: Run Tests
+      working-directory: ./github_docker_deploy
+      run: dotnet test
+  publish_to_docker:
+    needs: Test_Build
+    runs-on: ubuntu-latest
+    steps:
+    -  name: Login to DockerHub
+       uses: docker/login-action@v1 
+       with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          file: ./dockerfile
+      
+    -  name: Build and push
+       id: docker_build
+       uses: docker/build-push-action@v2
+       with:
           push: true
-          tags: rameshkumar456/frontend:latest 
-
+          tags: hasansahinnn/testdeploy:latest
+ 
+  create_new_container:
     needs: publish_to_docker
-     runs-on: ubuntu-latest
-     steps:
-       - name: executing remote ssh commands using password
-         uses: appleboy/ssh-action@master
-         with:
-           host: ${{ secrets.SSH_HOST }}
-           username: ${{ secrets.SSH_USERNAME }}
-           password: ${{ secrets.SSH_PASSWORD }}
-           port: ${{ secrets.SSH_PORT }}
-           script: |
-              docker rm -f $(docker ps -aq -f name=frontend)
-              docker rmi $(docker images | grep 'rameshkumar456/frontend' | awk '{print $3}')
-              docker pull rameshkumar456/frontend
-              docker run --name frontend -p 8080:3000 --restart=always -d rameshkumar456/frontend
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          docker rm -f $(docker ps -aq -f name=testdeploy)
+          docker rmi $(docker images | grep 'hasansahinnn/testdeploy' | awk '{print $3}')
+          docker pull hasansahinnn/testdeploy
+          docker run --name testdeploy -p 5000:80 --restart=always -d hasansahinnn/testdeploy
