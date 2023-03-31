@@ -29,9 +29,7 @@ jobs:
           file: ./dockerfile
           push: true
           tags: rameshkumar456/frontend:latest 
-
-create_new_container:
-    needs: publish_to_docker
+  needs: publish_to_docker
     runs-on: ubuntu-latest
     steps:
       - name: executing remote ssh commands using password
