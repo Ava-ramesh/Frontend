@@ -34,6 +34,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             docker rm -f $(docker ps -aq -f name=frontend)
-            docker rmi $(docker images | grep 'rameshkumar456/frontend' | awk '{print $3}')
-            docker pull rameshkumar456/frontend
-            docker run --name frontend -p 8080:3000 --restart=always -d rameshkumar456/frontend
+            docker rmi $(docker images | grep 'rameshkumar456/frontend:latest' | awk '{print $3}')
+            docker pull rameshkumar456/frontend:latest
+            docker run --name frontend -p 8080:3000 --restart=always -d rameshkumar456/frontend:latest
