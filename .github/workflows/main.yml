@@ -33,8 +33,5 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-      - name: Run the container
-        run: |
-          docker run \
-           -p 8080:3000 \
-           ${{ secrets.DOCKER_USERNAME }}/frontend
+          script: |
+            sudo docker pull rameshkumar456/frontend:latest
