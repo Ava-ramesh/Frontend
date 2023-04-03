@@ -36,6 +36,5 @@ jobs:
       - name: Run the container
         run: |
           docker run \
-           -e MY_VAR=myvalue \
            -p 8080:3000 \
            ${{ secrets.DOCKER_USERNAME }}/frontend
