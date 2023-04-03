@@ -36,3 +36,4 @@ jobs:
           script: |
             sudo docker rmi -f rameshkumar456/frontend
             sudo docker pull rameshkumar456/frontend:latest
+            sudo docker run --n frontend -p 8080:3000 -d rameshkumar456/frontend:latest
