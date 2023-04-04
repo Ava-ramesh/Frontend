@@ -33,7 +33,7 @@ function login(e) {
     email: document.getElementById('exampleInputEmail1').value,
     password: document.getElementById('exampleInputPassword1').value
   }
-  axios.post('http://52.141.216.5:9000/login', request)
+  axios.post('http://20.124.82.174:8080/login', request)
   .then( resp => {
     alert(resp.data.message);
   })
