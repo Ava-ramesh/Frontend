@@ -33,7 +33,6 @@ jobs:
           user: ${{ secrets.SSH_USERNAME }}
           pass: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
-          connect_timeout: 10s
           script: |
             sudo docker rm -f frontend
             sudo docker rmi -f rameshkumar456/frontend
