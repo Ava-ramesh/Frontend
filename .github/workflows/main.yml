@@ -38,4 +38,4 @@ jobs:
             sudo docker rm -f frontend
             sudo docker rmi -f rameshkumar456/frontend
             sudo docker pull rameshkumar456/frontend:latest
-            sudo docker run --name frontend -p 80:3000 rameshkumar456/frontend:latest
+            sudo docker run --name frontend -p 8080:3000 rameshkumar456/frontend:latest
