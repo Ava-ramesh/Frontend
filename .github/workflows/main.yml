@@ -22,7 +22,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: rameshkumar456/frontend:latest
+          tags: ${{ secrets.DOCKER_USERNAME }}/frontend:latest
       
       - name: executing remote ssh commands using password
         uses: cross-the-world/ssh-pipeline@master
@@ -33,6 +33,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             sudo docker rm -f frontend
-            sudo docker rmi -f rameshkumar456/frontend
-            sudo docker pull rameshkumar456/frontend:latest
-            sudo docker run --name frontend -p 8080:3000 -d rameshkumar456/frontend:latest
+            sudo docker rmi -f ${{ secrets.DOCKER_USERNAME }}/frontend
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/frontend:latest
+            sudo docker run --name frontend -p 8080:3000 -d ${{ secrets.DOCKER_USERNAME }}/frontend:latest
